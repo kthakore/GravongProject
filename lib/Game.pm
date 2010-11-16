@@ -12,6 +12,27 @@ sub new
 	my $self = {};
 	$self = bless($self, $class);
 
+
+	$self->_initialize();
+	return $self;
+
+}
+
+# PUBLIC Attributes
+
+sub app :lvalue
+{
+	#Return the app of the first variable
+	# This will be $self if $self->app is called
+	$_[0]->{app};
+}
+
+# PRIVATE Methods
+
+sub _initialize
+{
+	my $self = shift;
+
 	#Add an SDLx::App to hold
 
 	$self->{app} = SDLx::App->new( 
@@ -26,15 +47,8 @@ sub new
 		title =>"Gravong Client"
 	);
 
-	return $self;
+
+
 
 }
-
-sub app :lvalue
-{
-	#Return the app of the first variable
-	# This will be $self if $self->app is called
-	$_[0]->{app};
-}
-
 1;
