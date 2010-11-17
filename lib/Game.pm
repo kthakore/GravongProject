@@ -1,6 +1,9 @@
 package Game;
 use strict;
 use warnings;
+
+use Carp;
+
 use SDL;
 use SDL::Video;
 use SDLx::App;
@@ -47,8 +50,10 @@ sub _initialize
 		title =>"Gravong Client"
 	);
 
+	#Update the screen once
 
-
+	$self->{app}->update();
 
 }
+
 1;
