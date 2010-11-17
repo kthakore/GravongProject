@@ -47,7 +47,9 @@ sub _initialize
 		#We only want video initialized for now
 		init  => SDL_INIT_VIDEO,
 		#Title
-		title =>"Gravong Client"
+		title =>"Gravong Client",
+		icon => "data/grav_32.bmp",
+		icon_title => "Gravong"
 	);
 
 	#Update the screen once
