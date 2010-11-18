@@ -9,6 +9,18 @@ use SDL::Video;
 use SDLx::App;
 use Game::State::Play;
 
+my $SINGLETON;
+
+sub get_singleton
+{
+	return $SINGLETON if( $SINGLETON );
+
+    $SINGLETON = Game->new();
+
+	return $SINGLETON
+
+}
+
 sub new 
 {
 	my ($class) = shift;
