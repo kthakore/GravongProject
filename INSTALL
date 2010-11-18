@@ -1,0 +1,9 @@
+
+DEVELOPERS:
+	- Install perl
+		http://strawberryperl.com
+	- use CPAN
+		-- cpan CPAN
+		-- cpan Alien::SDL
+		-- cpan SDL
+		-- cpan SDLx::Widget
