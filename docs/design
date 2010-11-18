@@ -1,0 +1,19 @@
+Server Specific
+ Connection class
+  UDP server
+  Client 
+
+Game State Class
+ Current score
+  Game time
+  Game board positions 
+
+Client Specific
+ Game Play
+  When opponent scores
+  When ball goes back off the screen
+  Images and pictures 
+
+Common
+ Physics Engine 
+  Handles all of the physics of the game
