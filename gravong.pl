@@ -4,4 +4,8 @@ use lib 'lib';
 use Game; 
 
 #starts ze game
-Game->new->app->run(); 
+my $game = Game->new();
+
+$game->play_mode();
+$game->app->run(); 
+
