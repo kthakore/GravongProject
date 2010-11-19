@@ -33,7 +33,7 @@ sub load {
             $_[1]->blit_by(
                 $self->{title_screen},
                 [ 0, 0, 480, 480 ],
-                [ 50, 0, 480, 480 ]
+                [ 100, 100, 480, 480 ]
             );
             $self->{menu}->render( $_[1] );
             $_[1]->update();
