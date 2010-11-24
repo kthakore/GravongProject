@@ -1,6 +1,7 @@
-package Game::Menu;
+package Game::State::Menu;
 use strict;
 use warnings;
+use base 'Game::State';
 use SDLx::Widget::Menu;
 
 sub load {
@@ -18,9 +19,9 @@ sub load {
 
         #  change_sound => 'data/menu_select.ogg',
       )->items(
-        'Create Game' => sub { $self->{next} = 'new_game';  0 },
-        'Join Game'   => sub { $self->{next} = 'load_game'; 0 },
-        'Quit'        => sub { return },
+        'Create Game' => sub { $self->{next} = 'new_game'; },
+        'Join Game'   => sub { $self->{next} = 'load_game'; },
+        'Quit'        => sub { $self->{next} = 'quit' },
       );
 
     my $app = $game->app();
@@ -43,7 +44,6 @@ sub load {
     $self->{handlers}->[0] = $m_handle;
     $self->{handlers}->[1] = $s_handle;
     $self->{handlers}->[2] = $e_handle;
-
     return $self;
 
 }

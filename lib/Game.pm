@@ -21,6 +21,15 @@ sub get_singleton
 
 }
 
+sub start
+{
+
+	my $game = get_singleton();
+
+	$game->app->run();
+
+}
+
 sub new 
 {
 	my ($class) = shift;
