@@ -11,7 +11,7 @@ use SDLx::App;
 use Game::State::Menu;
 use Game::State::CreateGame;
 use Game::State::JoinGame;
-#use Game::State::CreateLevel;
+use Game::State::CreateLevel;
 
 my $SINGLETON;
 

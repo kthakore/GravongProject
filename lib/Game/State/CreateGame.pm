@@ -17,8 +17,17 @@ sub load{
 
 		if( $event->type == SDL_KEYDOWN )
 		{
-			$self->{next} = 'back';
-			$app->stop();	
+			my $key = SDL::Events::get_key_name( $event->key_sym );
+			if( $key eq 'left' )
+			{
+				$self->{next} = 'back';
+				$app->stop();	
+			}
+			elsif( $key eq 'right' )
+			{
+				$self->{next} = 'create_level';
+				$app->stop();
+			}
 		}
 
 
