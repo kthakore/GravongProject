@@ -9,6 +9,10 @@ use SDL::Video;
 use SDL::Event;
 use SDLx::App;
 use Game::State::Menu;
+use Game::State::CreateGame;
+use Game::State::JoinGame;
+#use Game::State::CreateLevel;
+
 my $SINGLETON;
 
 # The transition table between states
@@ -64,7 +68,7 @@ sub start {
 		$game->app->remove_all_handlers();
 
 		my $next = $concrete_state->next();
-		exit(1) unless $next;
+		die 'Finished at state '.$current_state unless $next;
 
 		$current_state = $STATES->{$current_state}->{$next};
 
@@ -119,9 +123,7 @@ sub _initialize {
 
 	$self->{app}->update();
 
-#Keep an array of current handlers
-
-	$self->{handlers} = [];
+	$self->{connected} = 0;
 
 }
 
