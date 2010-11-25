@@ -6,36 +6,75 @@ use Carp;
 
 use SDL;
 use SDL::Video;
+use SDL::Event;
 use SDLx::App;
-use Game::State::Play;
-
+use Game::State::Menu;
 my $SINGLETON;
 
-sub get_singleton
-{
-	return $SINGLETON if( $SINGLETON );
+# The transition table between states
+my $STATES = {
+	'Game::State::Menu' => {
+		create_game => 'Game::State::CreateGame',
+		join_game   => 'Game::State::JoinGame',
+	},
+	'Game::State::JoinGame' => {
+		back         => 'Game::State::Menu',
+		create_level => 'Game::State::CreateLevel',
+	},
+	'Game::State::CreateGame' => {
+		back         => 'Game::State::Menu',
+		create_level => 'Game::State::CreateLevel',
+	},
+	'Game::State::CreateLevel' => {
+		back => 'Game::State::Menu',
+		play => 'Game::State::Play',
+	},
+	'Game::State::Play' => {
+		back => 'Game::State::Menu',
+		end  => 'Game::State::EndGame'
+	}
+};
 
-    $SINGLETON = Game->new();
+sub get_singleton {
+	return $SINGLETON if ($SINGLETON);
+
+	$SINGLETON = Game->new();
 
 	return $SINGLETON
 
 }
 
-sub start
-{
+sub start {
 
 	my $game = get_singleton();
 
-	$game->app->run();
+	my $current_state = 'Game::State::Menu';
 
+	while(1)
+	{
+
+		my $concrete_state = $current_state->load($game);
+
+		my $global_quit_callback = sub { $concrete_state->next = undef;  $_[1]->stop() if $_[0]->type == SDL_QUIT }; 
+
+		$game->app->add_event_handler( $global_quit_callback );
+
+		$game->app->run();
+
+		$game->app->remove_all_handlers();
+
+		my $next = $concrete_state->next();
+		exit(1) unless $next;
+
+		$current_state = $STATES->{$current_state}->{$next};
+
+	}
 }
 
-sub new 
-{
+sub new {
 	my ($class) = shift;
 	my $self = {};
-	$self = bless($self, $class);
-
+	$self = bless( $self, $class );
 
 	$self->_initialize();
 	return $self;
@@ -44,70 +83,44 @@ sub new
 
 # PUBLIC Attributes
 
-sub app :lvalue
-{
-	#Return the app of the first variable
-	# This will be $self if $self->app is called
+sub app : lvalue {
+
+#Return the app of the first variable
+# This will be $self if $self->app is called
 	$_[0]->{app};
 }
 
-# PUBLIC Methods
-
-# Go to play_mode
-sub play_mode
-{
-	my $self = shift;
-
-	my $app = $self->{app};
-
-	my $e_handle = $app->add_event_handler( \&Game::State::Play::event_handler );
-	my $m_handle = $app->add_move_handler( \&Game::State::Play::move_handler );
-	my $s_handle = $app->add_show_handler( \&Game::State::Play::show_handler );
-
-	 $self->{handlers}->[0] = $m_handle;
-	 $self->{handlers}->[1] = $s_handle;
-	 $self->{handlers}->[2] = $e_handle;
-
-}
 
 # PRIVATE Methods
 
-sub _empty_handlers
-{
-	 my $self = shift;
-	 	
-	 $self->{app}->remove_move_handlers( $self->{handlers}->[0] ) if( $self->{handlers}->[0] );
-	 $self->{app}->remove_show_handlers( $self->{handlers}->[1] ) if( $self->{handlers}->[1] );
-	 $self->{app}->remove_event_handlers( $self->{handlers}->[2] ) if ( $self->{handlers}->[2] );
 
-}
-
-sub _initialize
-{
+sub _initialize {
 	my $self = shift;
 
-	#Add an SDLx::App to hold
+#Add an SDLx::App to hold
 
-	$self->{app} = SDLx::App->new( 
-		width => 700,
-		height => 700,
-		eoq => 1,
-		#We want double buffering
-		flags => SDL_HWSURFACE | SDL_DOUBLEBUF,
-		#We only want video initialized for now
-		init  => SDL_INIT_VIDEO,
-		#Title
-		title =>"Gravong Client",
-		icon => "data/grav_32.bmp",
-		icon_title => "Gravong"
-	);
+	$self->{app} = SDLx::App->new(
+			width  => 700,
+			height => 700,
 
-	#Update the screen once
+#We want double buffering
+			flags => SDL_HWSURFACE | SDL_DOUBLEBUF,
+
+#We only want video initialized for now
+			init => SDL_INIT_VIDEO,
+
+#Title
+			title      => "Gravong Client",
+			icon       => "data/grav_32.bmp",
+			icon_title => "Gravong"
+			);
+
+#Update the screen once
 
 	$self->{app}->update();
 
-	#Keep an array of current handlers
-	
+#Keep an array of current handlers
+
 	$self->{handlers} = [];
 
 }
