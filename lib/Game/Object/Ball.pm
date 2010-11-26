@@ -14,6 +14,8 @@ sub new {
 
 	$self->interface = SDLx::Controller::Interface->new( @_ );
 
+	$self->_initialize();
+
     return $self;
 
 }
@@ -23,6 +25,18 @@ sub interface :lvalue
 {
 	$_[0]->{interface};
 }
+
+sub _initialize
+{
+	my $self = shift;
+
+	my $interface = $self->interface();
+
+	
+
+}
+
+
 
 
 1;
