@@ -32,25 +32,24 @@ sub _initialize {
     my $interface = $self->interface;
     $interface->set_acceleration( sub { _acceleration( @_, $self->{level} ) } );
 
-	my $app = $self->{app};
+    my $app = $self->{app};
 
-	$interface->attach( $app, \&_show_ball,  $app );
+    $interface->attach( $app, \&_show_ball, $app );
 
 }
 
 sub _acceleration {
     my ( $time, $current_state, $level ) = @_;
 
-
-	return (0,1,0);
+    return ( 0, 1, 0 );
 }
 
 sub _show_ball {
-              my $state = shift;
-			  my $app = shift;
+    my $state = shift;
+    my $app   = shift;
 
-			
-			$app->draw_circle_filled( [$state->x, $state->y], 5, [0,255,0,255], 1 );
+    $app->draw_circle_filled( [ $state->x, $state->y ],
+        5, [ 0, 255, 0, 255 ], 1 );
 }
 
 1;
