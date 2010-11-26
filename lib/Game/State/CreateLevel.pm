@@ -17,8 +17,21 @@ sub load {
         my ( $event, $app ) = @_;
 
         if ( $event->type == SDL_KEYDOWN ) {
-            $self->{next} = 'back';
-            $app->stop();
+		
+			my $key = SDL::Events::get_key_name( $event->key_sym ) ;
+
+			if( $key eq 'left' )
+			{
+            	$self->{next} = 'back';
+            	$app->stop();
+			}
+			if ( $key eq 'right' )
+			{
+				#TODO: GET THIS FROM NETWORK LAND
+				$game->level = $self->{planets};
+				$self->{next} = 'play';
+				$app->stop();
+			}
         }
 
         $self->_drawing_mouse_handler(@_);

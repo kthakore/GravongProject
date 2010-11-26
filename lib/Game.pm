@@ -12,6 +12,7 @@ use Game::State::Menu;
 use Game::State::CreateGame;
 use Game::State::JoinGame;
 use Game::State::CreateLevel;
+use Game::State::Play;
 
 my $SINGLETON;
 
@@ -94,6 +95,14 @@ sub app : lvalue {
     #Return the app of the first variable
     # This will be $self if $self->app is called
     $_[0]->{app};
+}
+
+# This will store our level that is recieved from 
+# the network 
+sub level : lvalue {
+
+	$_[0]->{level};
+
 }
 
 # PRIVATE Methods
