@@ -97,11 +97,11 @@ sub app : lvalue {
     $_[0]->{app};
 }
 
-# This will store our level that is recieved from 
-# the network 
+# This will store our level that is recieved from
+# the network
 sub level : lvalue {
 
-	$_[0]->{level};
+    $_[0]->{level};
 
 }
 

@@ -12,31 +12,23 @@ sub new {
 
     $self = bless( $self, $class );
 
-	$self->interface = SDLx::Controller::Interface->new( @_ );
+    $self->interface = SDLx::Controller::Interface->new(@_);
 
-	$self->_initialize();
+    $self->_initialize();
 
     return $self;
 
 }
 
-
-sub interface :lvalue
-{
-	$_[0]->{interface};
+sub interface : lvalue {
+    $_[0]->{interface};
 }
 
-sub _initialize
-{
-	my $self = shift;
+sub _initialize {
+    my $self = shift;
 
-	my $interface = $self->interface();
-
-	
+    my $interface = $self->interface();
 
 }
-
-
-
 
 1;

@@ -33,13 +33,9 @@ sub load {
 
     my $show_handler = sub {
         my ( $delta, $app ) = @_;
-        $app->draw_gfx_text(
-            [ 10, 10 ],
-            [ 255, 0, 0, 255 ],
-            "Playing Game"
-        );
+        $app->draw_gfx_text( [ 10, 10 ], [ 255, 0, 0, 255 ], "Playing Game" );
 
-		$self->_draw_planets($delta, $app, $game);
+        $self->_draw_planets( $delta, $app, $game );
 
         $app->update();
     };
