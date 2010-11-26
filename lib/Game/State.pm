@@ -2,16 +2,12 @@ package Game::State;
 use strict;
 use warnings;
 
-
-sub next :lvalue 
-{
-	return $_[0]->{next};
+sub next : lvalue {
+    return $_[0]->{next};
 }
 
-sub load
-{
+sub load {
 
 }
-
 
 1;

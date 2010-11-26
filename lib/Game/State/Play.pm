@@ -3,44 +3,40 @@ use strict;
 use warnings;
 use Carp;
 
+sub new {
+    my ( $class, @args ) = @_;
 
-sub new
-{
-	my ($class, @args) = @_;
+    my $self = {};
 
-	my $self = {};
+    $self = bless( $self, $class );
 
-	$self = bless( $self, $class );
-
-	return $self;
+    return $self;
 
 }
 
-sub event_handler
-{
+sub event_handler {
 
-	warn 'Handling Events in Play Mode';
-
-}
-
-sub move_handler
-{
-
-	warn 'Moving stuff in Play Mode';
-	#move the ball
-	#move the paddle
-	#trigger events to send to network
+    warn 'Handling Events in Play Mode';
 
 }
 
-sub show_handler
-{
+sub move_handler {
 
-	warn 'Showing stuff in Play Mode';
-	#draw the planets
-	#show the ball
+    warn 'Moving stuff in Play Mode';
+
+    #move the ball
+    #move the paddle
+    #trigger events to send to network
+
+}
+
+sub show_handler {
+
+    warn 'Showing stuff in Play Mode';
+
+    #draw the planets
+    #show the ball
     #draw the paddle
-		
 
 }
 

@@ -1,8 +1,8 @@
 use strict;
 use warnings;
 use lib 'lib';
-use Game; 
+use Game;
 
 #starts ze game
-Game::start(); 
+Game::start();
 
