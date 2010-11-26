@@ -12,9 +12,7 @@ sub load{
 	my $app = $game->app();
 	$app->draw_rect( [0,0,$app->w, $app->h], [0,0,0,255]);
 
-
-	my $ipaddress =	SDLx::Widget::Textbox->new(app => $app, x => 200, y => 230, w => 200, h => 20, name => 'ipaddress', );
-
+	my $ipaddress =	SDLx::Widget::Textbox->new(app => $app, x => 200, y => 230, w => 200, h => 20, name => 'ipaddress', focus => 1 );
 
 	my $event_handler = sub {
 
@@ -75,9 +73,9 @@ sub load{
 		$app->draw_gfx_text( [10,10], [255,0,0,255], $self->{status} );
 
 		$ipaddress->show;
+
 		$app->update(); 
 	};
-
 
 	$app->add_event_handler( $event_handler );
 
@@ -85,9 +83,7 @@ sub load{
 
 	$app->add_move_handler( $move_handler );
 
-
 	return $self;
-
 
 }
 
