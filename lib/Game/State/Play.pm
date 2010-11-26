@@ -3,14 +3,25 @@ use strict;
 use warnings;
 use base 'Game::State';
 use SDL::Events;
+use Game::Object::Ball;
+
 
 sub load {
     my ( $class, $game ) = @_;
 
     my $self = bless( {}, $class );
+
+
+	$self->_initialize($game);
+    return $self;
+
+}
+
+sub _initialize {
+	my( $self, $game ) = @_;
+
     my $app = $game->app();
     $app->draw_rect( [ 0, 0, $app->w, $app->h ], [ 0, 0, 0, 255 ] );
-
     my $event_handler = sub {
 
         my ( $event, $app ) = @_;
@@ -40,11 +51,24 @@ sub load {
         $app->update();
     };
 
+	my $clear_screen = sub {
+
+        my ( $delta, $app ) = @_;
+	    $app->draw_rect( [ 0, 0, $app->w, $app->h ], [ 0, 0, 0, 255 ] );
+
+	};
+
+	$app->add_show_handler( $clear_screen ); 
+
+	#TODO: Check $game->player and make $ball from new $x, $y only if we are 
+	#player 1
+	$self->{ball} = Game::Object::Ball->new( app => $app, level => $game->level, x => 350, y=> 650 );
+
+
     $app->add_event_handler($event_handler);
 
     $app->add_show_handler($show_handler);
 
-    return $self;
 
 }
 

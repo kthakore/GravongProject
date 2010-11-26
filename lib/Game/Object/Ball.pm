@@ -3,12 +3,14 @@ use strict;
 use warnings;
 use Carp;
 
+use SDLx::Controller::State;
 use SDLx::Controller::Interface;
 
 sub new {
-    my ( $class, $app, @args ) = @_;
+    my $class = shift;
+    my %args  = @_;
 
-    my $self = {};
+    my $self = \%args;
 
     $self = bless( $self, $class );
 
@@ -25,10 +27,30 @@ sub interface : lvalue {
 }
 
 sub _initialize {
-    my $self = shift;
+    my ($self) = @_;
 
-    my $interface = $self->interface();
+    my $interface = $self->interface;
+    $interface->set_acceleration( sub { _acceleration( @_, $self->{level} ) } );
 
+	my $app = $self->{app};
+
+	$interface->attach( $app, \&_show_ball,  $app );
+
+}
+
+sub _acceleration {
+    my ( $time, $current_state, $level ) = @_;
+
+
+	return (0,1,0);
+}
+
+sub _show_ball {
+              my $state = shift;
+			  my $app = shift;
+
+			
+			$app->draw_circle_filled( [$state->x, $state->y], 5, [0,255,0,255], 1 );
 }
 
 1;
