@@ -38,10 +38,32 @@ sub _initialize {
 
 }
 
+sub _gravity {
+	my ($x1, $x2, $size) = @_;
+
+	my $dist_square =  ($x1 - $x2 );
+
+	return ($size * 6)/ $dist_square ;
+
+}
+
 sub _acceleration {
     my ( $time, $current_state, $level ) = @_;
 
-    return ( 0, 1, 0 );
+	my $sum_accel_x = 0;
+	my $sum_accel_y = 0;
+
+	 my @planets = @{ $level };
+
+	foreach my $planet ( @planets )
+	{
+		
+		$sum_accel_x += _gravity( $current_state->x, $planet->{x}, $planet->{size} );
+		$sum_accel_y += _gravity( $current_state->y, $planet->{y}, $planet->{size} );
+
+
+	}
+    return ( $sum_accel_x, -$sum_accel_y , 0 );
 }
 
 sub _show_ball {
