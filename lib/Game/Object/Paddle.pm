@@ -48,7 +48,7 @@ sub _initialize {
 	$self->{vx} = 0;
 	
 	$self->{x} = $app->w/2;
-	$self->{y} = 600;
+	$self->{y} = 680;
 	$self->{w} = 100;
 	$self->{h} = 10;
 
