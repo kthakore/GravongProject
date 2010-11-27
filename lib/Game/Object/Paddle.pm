@@ -91,10 +91,18 @@ sub move_handler
 {
 	my ($self, $delta, $app, $t) = @_;
 
-
-	if ( ( $self->{x} < $app->w ) || (  $self->{x} > 0 ) )
+	if ( ( ($self->{x} + $self->{w}) < $app->w ) || (  $self->{x} > 0 ) )
 	{
 		$self->{x} += $self->{vx};
+	}
+	
+	if( ( ($self->{x} + $self->{w} )> $app->w ) )
+	{
+		$self->{x} = $app->w - $self->{w};
+	}
+	elsif(  $self->{x} <  0 )
+	{
+		$self->{x} = 0;
 	}
 
 }
