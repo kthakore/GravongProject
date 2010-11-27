@@ -4,6 +4,7 @@ use warnings;
 use base 'Game::State';
 use SDL::Events;
 use Game::Object::Ball;
+use Game::Object::Paddle;
 
 sub load {
     my ( $class, $game ) = @_;
@@ -66,6 +67,10 @@ sub _initialize {
         x     => 350,
         y     => 650
     );
+
+	$self->{paddle} = Game::Object::Paddle->new(
+		app   => $app 
+	);
 
     $app->add_event_handler($event_handler);
 
