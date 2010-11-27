@@ -38,9 +38,6 @@ sub _initialize {
         }
 
     };
-
-    my $move_handler = sub { };
-
     my $show_handler = sub {
         my ( $delta, $app ) = @_;
         $app->draw_gfx_text( [ 10, 10 ], [ 255, 0, 0, 255 ], "Playing Game" );
@@ -59,23 +56,23 @@ sub _initialize {
 
     $app->add_show_handler($clear_screen);
 
+    $self->{paddle} = Game::Object::Paddle->new( app => $app );
+
     #TODO: Check $game->player and make $ball from new $x, $y only if we are
     #player 1
     $self->{ball} = Game::Object::Ball->new(
-        app   => $app,
-        level => $game->level,
-        x     => 350,
-        y     => 650
+        app    => $app,
+        level  => $game->level,
+        paddle => $self->{paddle},
+        x      => 350,
+        y      => 650,
+        v_x    => 10,
+        v_y    => 10,
     );
-
-	$self->{paddle} = Game::Object::Paddle->new(
-		app   => $app 
-	);
 
     $app->add_event_handler($event_handler);
 
     $app->add_show_handler($show_handler);
-
 }
 
 sub _draw_planets {
