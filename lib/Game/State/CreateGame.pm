@@ -3,13 +3,19 @@ use strict;
 use warnings;
 use base 'Game::State';
 use SDL::Events;
+use Game::Object::Socket;
+
 
 sub load {
     my ( $class, $game ) = @_;
-
     my $self = bless( {}, $class );
     my $app = $game->app();
     $app->draw_rect( [ 0, 0, $app->w, $app->h ], [ 0, 0, 0, 255 ] );
+
+	$game->{socket_reader} = Game::Object::Socket->new( game => $game );
+
+	$self->{status} = 
+            "Created Game Waiting for Connection on ". $game->{ipp};
 
     my $event_handler = sub {
 
@@ -29,14 +35,26 @@ sub load {
 
     };
 
-    my $move_handler = sub { };
+    my $move_handler = sub { 
+
+		my $data = $game->{socket_reader}->recv();
+		
+		if( $data && $data =~ /^(1)(\|)(\S+)$/ )
+		{
+			
+			$self->{status} = 'Connected to :'.$3;
+		}
+		
+	};
 
     my $show_handler = sub {
         my ( $delta, $app ) = @_;
+
+		$app->draw_rect( [0,0,$app->w,$app->h], [0,0,0,255]);
+
         $app->draw_gfx_text(
             [ 10, 10 ],
-            [ 255, 0, 0, 255 ],
-            "Created Game Waiting for Connection"
+            [ 255, 0, 0, 255 ], $self->{status}
         );
 
         $app->update();
@@ -45,6 +63,8 @@ sub load {
     $app->add_event_handler($event_handler);
 
     $app->add_show_handler($show_handler);
+
+	$app->add_move_handler($move_handler);
 
     return $self;
 

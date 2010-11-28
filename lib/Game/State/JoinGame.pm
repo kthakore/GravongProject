@@ -4,6 +4,7 @@ use warnings;
 use base 'Game::State';
 use SDL::Events;
 use SDLx::Widget::Textbox;
+use Game::Object::Socket;
 
 sub load {
     my ( $class, $game ) = @_;
@@ -11,6 +12,10 @@ sub load {
     my $self = bless( {}, $class );
     my $app = $game->app();
     $app->draw_rect( [ 0, 0, $app->w, $app->h ], [ 0, 0, 0, 255 ] );
+
+
+	Game::Object::Socket->new( game => $game );
+
 
     my $ipaddress = SDLx::Widget::Textbox->new(
         app   => $app,
@@ -60,6 +65,13 @@ sub load {
 
         if ( $self->{connecting} ) {
             $self->{status} = "Trying to connect to: " . $ipaddress->{value};
+
+			my @ip = split(':', $ipaddress->{value});
+			
+			$game->{remote} = Game::Object::Socket->new( game => $game, remote => 1, remote_ip => $ip[0], remote_port => $ip[1] );
+
+			my $string = '1|'.$game->{local_ip}.':'.$game->{port};
+			$game->{remote}->print( $string );
 
         }
 
