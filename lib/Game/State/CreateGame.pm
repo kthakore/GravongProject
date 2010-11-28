@@ -5,17 +5,15 @@ use base 'Game::State';
 use SDL::Events;
 use Game::Object::Socket;
 
-
 sub load {
     my ( $class, $game ) = @_;
     my $self = bless( {}, $class );
     my $app = $game->app();
     $app->draw_rect( [ 0, 0, $app->w, $app->h ], [ 0, 0, 0, 255 ] );
 
-	$game->{socket_reader} = Game::Object::Socket->new( game => $game );
+    $game->{socket_reader} = Game::Object::Socket->new( game => $game );
 
-	$self->{status} = 
-            "Created Game Waiting for Connection on ". $game->{ipp};
+    $self->{status} = "Created Game Waiting for Connection on " . $game->{ipp};
 
     my $event_handler = sub {
 
@@ -35,43 +33,42 @@ sub load {
 
     };
 
-    my $move_handler = sub { 
+    my $move_handler = sub {
 
-		my $data = $game->{socket_reader}->recv();
-		
-		if( $data && $data =~ /^(1)(\|)(\S+)$/ )
-		{
-			
-			$self->{status} = 'Connected to :'.$3;
+        my $data = $game->{socket_reader}->recv();
 
-			$3 =~ /(\S+)(\:)(\S+)/;
+        if ( $data && $data =~ /^(1)(\|)(\S+)$/ ) {
 
-			my $ip = $1;
-			my $port = $3;
+            $self->{status} = 'Connected to :' . $3;
 
-						
-			$game->{remote} = Game::Object::Socket->new( game => $game, remote => 1, remote_ip => $ip, remote_port => $port );
+            $3 =~ /(\S+)(\:)(\S+)/;
 
-			#Complete hand shake
-			$game->{remote}->print ( "(1)" );
+            my $ip   = $1;
+            my $port = $3;
 
-			     $self->{next} = 'create_level';
-                $app->stop();
+            $game->{remote} = Game::Object::Socket->new(
+                game        => $game,
+                remote      => 1,
+                remote_ip   => $ip,
+                remote_port => $port
+            );
 
-			
-		}
-		
-	};
+            #Complete hand shake
+            $game->{remote}->print("(1)");
+
+            $self->{next} = 'create_level';
+            $app->stop();
+
+        }
+
+    };
 
     my $show_handler = sub {
         my ( $delta, $app ) = @_;
 
-		$app->draw_rect( [0,0,$app->w,$app->h], [0,0,0,255]);
+        $app->draw_rect( [ 0, 0, $app->w, $app->h ], [ 0, 0, 0, 255 ] );
 
-        $app->draw_gfx_text(
-            [ 10, 10 ],
-            [ 255, 0, 0, 255 ], $self->{status}
-        );
+        $app->draw_gfx_text( [ 10, 10 ], [ 255, 0, 0, 255 ], $self->{status} );
 
         $app->update();
     };
@@ -80,7 +77,7 @@ sub load {
 
     $app->add_show_handler($show_handler);
 
-	$app->add_move_handler($move_handler);
+    $app->add_move_handler($move_handler);
 
     return $self;
 

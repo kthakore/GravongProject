@@ -13,9 +13,7 @@ sub load {
     my $app = $game->app();
     $app->draw_rect( [ 0, 0, $app->w, $app->h ], [ 0, 0, 0, 255 ] );
 
-
-	$game->{socket_reader} = Game::Object::Socket->new( game => $game );
-
+    $game->{socket_reader} = Game::Object::Socket->new( game => $game );
 
     my $ipaddress = SDLx::Widget::Textbox->new(
         app   => $app,
@@ -49,8 +47,8 @@ sub load {
 
         $self->{status} = "Type in the ipaddress of the server";
 
-		my $data = $game->{socket_reader}->recv();
-		$game->{connected} = 1 if ($data eq '(1)');
+        my $data = $game->{socket_reader}->recv();
+        $game->{connected} = 1 if ( $data eq '(1)' );
 
         #Check for connection and go to next stage
         if ( $game->{connected} && $game->{connected} != -1 ) {
@@ -69,14 +67,17 @@ sub load {
         if ( $self->{connecting} ) {
             $self->{status} = "Trying to connect to: " . $ipaddress->{value};
 
-			my @ip = split(':', $ipaddress->{value});
-			
-			$game->{remote} = Game::Object::Socket->new( game => $game, remote => 1, remote_ip => $ip[0], remote_port => $ip[1] );
+            my @ip = split( ':', $ipaddress->{value} );
 
-			my $string = '1|'.$game->{local_ip}.':'.$game->{port};
-			$game->{remote}->print( $string );
+            $game->{remote} = Game::Object::Socket->new(
+                game        => $game,
+                remote      => 1,
+                remote_ip   => $ip[0],
+                remote_port => $ip[1]
+            );
 
-			
+            my $string = '1|' . $game->{local_ip} . ':' . $game->{port};
+            $game->{remote}->print($string);
 
         }
 

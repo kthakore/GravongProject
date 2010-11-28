@@ -26,17 +26,19 @@ sub load {
             }
             if ( $key eq 'right' ) {
 
-				my $planets;	
-				foreach my $planet (@{$self->planets} )
-				{
-					$planets .= ':'.$planet->{x}.','.$planet->{y}.','.$planet->{size};
+                my $planets;
+                foreach my $planet ( @{ $self->planets } ) {
+                    $planets .= ':'
+                      . $planet->{x} . ','
+                      . $planet->{y} . ','
+                      . $planet->{size};
 
-				}
-				$game->{remote}->print( "2|$planets");	
-		
-				$self->{state} = 'sent';
-				
-				$self->{status} = 'Waiting for opponent to make level';
+                }
+                $game->{remote}->print("2|$planets");
+
+                $self->{state} = 'sent';
+
+                $self->{status} = 'Waiting for opponent to make level';
 
             }
         }
@@ -45,40 +47,35 @@ sub load {
 
     };
 
-    my $move_handler = sub { 
+    my $move_handler = sub {
 
-		if( $self->{state} eq 'sent')
-		{
-		 my $data = $game->{socket_reader}->recv();
+        if ( $self->{state} && $self->{state} eq 'sent' ) {
+            my $data = $game->{socket_reader}->recv();
 
-		warn "Got data $data";
+            if ( $data && $data =~ /^(2)(\|)(\S+)$/ ) {
 
-		if( $data && $data =~ /^(2)(\|)(\S+)$/  )
-		{
+                my $planets = $3;
 
-			my $planets = $3;
+                my @planet = split( '\:', $planets );
+                my $level  = [];
+                my $count  = 0;
+                foreach my $p (@planet) {
+                    my @pp = split( '\,', $p );
 
-			my @planet = split( '\:', $planets );
-			my $level = [];
-			my $count = 0;
-			foreach my $p (@planet)		
-			{
-				my @pp = split( '\,', $p );
+                    if ( $pp[0] && $pp[1] && $pp[2] ) {
+                        push @{$level},
+                          { x => $pp[0], y => $pp[1], size => $pp[2] };
+                    }
+                }
 
-				push @{$level}, { x=> $pp[0], y => $pp[1], size => $pp[2] };
-		
-			}
-
-			$game->{level} = $level;
-                $self->{next} = 'play';
+                $game->{level} = $level;
+                $self->{next}  = 'play';
                 $app->stop();
 
-		}
-		}
-	
-		
+            }
+        }
 
-	};
+    };
 
     my $show_handler = sub {
         my ( $delta, $app ) = @_;
@@ -92,7 +89,6 @@ sub load {
     $app->add_event_handler($event_handler);
     $app->add_move_handler($move_handler);
     $app->add_show_handler($show_handler);
-
 
     return $self;
 
