@@ -19,11 +19,11 @@ sub load {
 sub _initialize {
     my ( $self, $game ) = @_;
 
-	#Set the score!
+    #Set the score!
 
     my $app = $game->app();
 
-	$game->{scores} = [0,0];
+    $game->{scores} = [ 0, 0 ];
     $app->draw_rect( [ 0, 0, $app->w, $app->h ], [ 0, 0, 0, 255 ] );
     my $event_handler = sub {
 
@@ -43,7 +43,7 @@ sub _initialize {
 
         $self->_draw_planets( $delta, $app, $game );
 
-		$self->_draw_score( $delta, $app, $game );
+        $self->_draw_score( $delta, $app, $game );
     };
 
     my $clear_screen = sub {
@@ -57,21 +57,22 @@ sub _initialize {
 
     $app->add_show_handler($show_handler);
 
-
     $game->{paddle} = Game::Object::Paddle->new( app => $app );
 
     $self->{ball} = Game::Object::Ball->new(
-        app    => $app,
-		game   => $game,
-        x      => 350,
-        y      => 650,
-        v_x    => 10,
-        v_y    => 10,
+        app  => $app,
+        game => $game,
+        x    => 350,
+        y    => 650,
+        v_x  => 10,
+        v_y  => 10,
     );
+
+    $app->add_move_handler( sub { $self->_send_recv_score($game) } );
 
     $app->add_event_handler($event_handler);
 
-	$app->add_show_handler( sub { $_[1]->update() } );
+    $app->add_show_handler( sub { $_[1]->update() } );
 }
 
 sub _draw_planets {
@@ -88,10 +89,33 @@ sub _draw_planets {
 
 }
 
+sub _send_recv_score {
+    my ( $self, $game ) = @_;
+
+    if ( $self->{ball}->{updated_score} ) {
+        $self->{ball}->{updated_score} = 0;
+
+        $game->{remote}->print( "4|" . $game->{scores}->[0] );
+
+    }
+
+    my $data = $game->{socket_reader}->recv();
+
+    if ( $data && $data =~ /^(4)(\|)(\S+)$/ ) {
+        $game->{scores}->[1] = $3;
+
+    }
+
+}
+
 sub _draw_score {
     my ( $self, $delta, $app, $game ) = @_;
 
-        $app->draw_gfx_text( [ 10, 10 ], [ 255, 0, 0, 255 ], "You: ".$game->{scores}->[0]." Opponent: ".$game->{scores}->[1] );
+    $app->draw_gfx_text(
+        [ 10, 10 ],
+        [ 255, 0, 0, 255 ],
+        "You: " . $game->{scores}->[0] . " Opponent: " . $game->{scores}->[1]
+    );
 
 }
 

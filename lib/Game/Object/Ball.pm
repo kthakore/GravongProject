@@ -43,40 +43,37 @@ sub _acceleration {
 
     my $paddle = $self->{game}->{paddle};
 
-	my $scores = $self->{game}->{scores};
+    my $scores = $self->{game}->{scores};
 
-	if ( $current_state->y > $app->h )
-	{
-		$scores->[0] += 1;
+    if ( $current_state->y > $app->h ) {
+        $scores->[0] += 1;
 
-		$self->{updated_score} = 1;
+        $self->{updated_score} = 1;
 
-		_reset_ball( $app->w, $app->h, $current_state);
-	}
+        _reset_ball( $app->w, $app->h, $current_state );
+    }
 
     my $sum_accel_x = 0;
     my $sum_accel_y = 0;
 
-        my @planets = @{$level};
-        foreach my $planet (@planets) {
+    my @planets = @{$level};
+    foreach my $planet (@planets) {
 
-            my $dx = ( $planet->{x} - $current_state->x );
-            my $dy = ( $planet->{y} - $current_state->y );
-            my $D  = sqrt( $dx**2 + $dy**2 );
-            my $A  = 1000 * $planet->{size} / $D**2;
+        my $dx = ( $planet->{x} - $current_state->x );
+        my $dy = ( $planet->{y} - $current_state->y );
+        my $D  = sqrt( $dx**2 + $dy**2 );
+        my $A  = 1000 * $planet->{size} / $D**2;
 
-            if ( $D < ( $planet->{size} + 5 ) ) {
-                $sum_accel_x -= ( $dx * $A / $D ) * 0.4;
-                $sum_accel_y -= ( $dy * $A / $D ) * 0.4;
-            }
-            else {
-                $sum_accel_x += $dx * $A / $D;
-                $sum_accel_y += $dy * $A / $D;
-            }
-
+        if ( $D < ( $planet->{size} + 5 ) ) {
+            $sum_accel_x -= ( $dx * $A / $D ) * 0.4;
+            $sum_accel_y -= ( $dy * $A / $D ) * 0.4;
+        }
+        else {
+            $sum_accel_x += $dx * $A / $D;
+            $sum_accel_y += $dy * $A / $D;
         }
 
-
+    }
 
     if (
         _collision(
@@ -104,26 +101,23 @@ sub _acceleration {
     $current_state->y(0) if $current_state->y < 0;
     $current_state->y( $app->h ) if $current_state->y > $app->h;
 
-	
-
     return ( $sum_accel_x, $sum_accel_y, 0 );
 }
 
 sub _reset_ball {
-	my ($w, $h, $state ) = @_;
+    my ( $w, $h, $state ) = @_;
 
-	my $x = rand($w);
-	my $y = rand($h);
+    my $x = rand($w);
+    my $y = rand($h);
 
-	my $v_x = rand( 10 ) - rand( 10 ) + 5;
-	my $v_y = rand( 10 ) - rand( 10 ) + 5;
+    my $v_x = rand(10) - rand(10) + 5;
+    my $v_y = rand(10) - rand(10) + 5;
 
+    $state->x($x);
+    $state->y($y);
+    $state->v_x($v_x);
+    $state->v_y($v_y);
 
-	$state->x( $x );
-	$state->y( $y );
-	$state->v_x( $v_x );	
-	$state->v_y( $v_y );
-	
 }
 
 sub _show_ball {
