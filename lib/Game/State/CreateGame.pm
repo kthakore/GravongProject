@@ -25,10 +25,7 @@ sub load {
                 $self->{next} = 'back';
                 $app->stop();
             }
-            elsif ( $key eq 'right' ) {
-                $self->{next} = 'create_level';
-                $app->stop();
-            }
+
         }
 
     };

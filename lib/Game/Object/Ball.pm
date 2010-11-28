@@ -79,7 +79,7 @@ sub _acceleration {
       )
     {
         $current_state->v_y( -$current_state->v_y );
-		$current_state->y( $current_state->y + (0.4 * $current_state->v_y ) );
+        $current_state->y( $current_state->y + ( 0.4 * $current_state->v_y ) );
     }
 
     if ( $current_state->x < 0 || $current_state->x > $app->w ) {

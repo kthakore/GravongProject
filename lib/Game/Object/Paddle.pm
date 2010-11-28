@@ -64,11 +64,11 @@ sub event_handler {
     if ( $event->type == SDL_KEYDOWN ) {
         my $key = SDL::Events::get_key_name( $event->key_sym );
 
-        if ( $key eq 'a' ) {
+        if ( $key eq 'a' || $key eq 'left' ) {
             $self->{vx} = -10;
         }
 
-        if ( $key eq 'd' ) {
+        if ( $key eq 'd' || $key eq 'right' ) {
             $self->{vx} = 10;
         }
 

@@ -24,7 +24,7 @@ sub load {
                 $self->{next} = 'back';
                 $app->stop();
             }
-            if ( $key eq 'right' ) {
+            if ( $key eq 'enter' || $key eq 'return' ) {
 
                 my $planets;
                 foreach my $planet ( @{ $self->planets } ) {

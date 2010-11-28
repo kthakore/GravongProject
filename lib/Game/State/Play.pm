@@ -27,12 +27,8 @@ sub _initialize {
 
         if ( $event->type == SDL_KEYDOWN ) {
             my $key = SDL::Events::get_key_name( $event->key_sym );
-            if ( $key eq 'left' ) {
+            if ( $key eq 'escap' ) {
                 $self->{next} = 'back';
-                $app->stop();
-            }
-            elsif ( $key eq 'right' ) {
-                $self->{next} = 'end';
                 $app->stop();
             }
         }
