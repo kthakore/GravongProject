@@ -19,7 +19,7 @@ sub load {
 
         #  change_sound => 'data/menu_select.ogg',
       )->items(
-        'Create Game' => sub { $self->{next} = 'create_game'; },
+        'Create Game' => sub {  $self->{next} = 'create_game';  },
         'Join Game'   => sub { $self->{next} = 'join_game'; },
         'Quit'        => sub { $self->{next} = 'quit' },
       );
@@ -31,7 +31,7 @@ sub load {
     $app->add_event_handler(
         sub {
             my $status = $self->{menu}->event_hook( $_[0] );
-            if ( $status ne 1 ) { $_[1]->stop(); }
+            if ( $status ne 1 || $self->{next} ) { $_[1]->stop(); }
         }
     );
     $app->add_move_handler( sub { } );
