@@ -26,10 +26,18 @@ sub load {
             }
             if ( $key eq 'right' ) {
 
-                #TODO: GET THIS FROM NETWORK LAND
-                $game->level = $self->{planets};
-                $self->{next} = 'play';
-                $app->stop();
+				my $planets;	
+				foreach my $planet (@{$self->planets} )
+				{
+					$planets .= ':'.$planet->{x}.','.$planet->{y}.','.$planet->{size};
+
+				}
+				$game->{remote}->print( "2|$planets");	
+		
+				$self->{state} = 'sent';
+				
+				$self->{status} = 'Waiting for opponent to make level';
+
             }
         }
 
@@ -37,11 +45,44 @@ sub load {
 
     };
 
-    my $move_handler = sub { };
+    my $move_handler = sub { 
+
+		if( $self->{state} eq 'sent')
+		{
+		 my $data = $game->{socket_reader}->recv();
+
+		warn "Got data $data";
+
+		if( $data && $data =~ /^(2)(\|)(\S+)$/  )
+		{
+
+			my $planets = $3;
+
+			my @planet = split( '\:', $planets );
+			my $level = [];
+			my $count = 0;
+			foreach my $p (@planet)		
+			{
+				my @pp = split( '\,', $p );
+
+				push @{$level}, { x=> $pp[0], y => $pp[1], size => $pp[2] };
+		
+			}
+
+			$game->{level} = $level;
+                $self->{next} = 'play';
+                $app->stop();
+
+		}
+		}
+	
+		
+
+	};
 
     my $show_handler = sub {
         my ( $delta, $app ) = @_;
-        $app->draw_gfx_text( [ 10, 10 ], [ 255, 0, 0, 255 ], "Created Level" );
+        $app->draw_gfx_text( [ 10, 10 ], [ 255, 0, 0, 255 ], $self->{status} );
 
         $self->_draw_planets(@_);
 
@@ -49,8 +90,9 @@ sub load {
     };
 
     $app->add_event_handler($event_handler);
-
+    $app->add_move_handler($move_handler);
     $app->add_show_handler($show_handler);
+
 
     return $self;
 
