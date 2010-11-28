@@ -2,9 +2,6 @@ package Game::Object::Ball;
 use strict;
 use warnings;
 use Carp;
-
-use Data::Dumper;
-
 use SDLx::Controller::State;
 use SDLx::Controller::Interface;
 
@@ -54,8 +51,6 @@ sub _acceleration {
         my @planets = @{$level};
         foreach my $planet (@planets) {
 
-            warn Dumper $planet        unless $planet->{x};
-            warn Dumper $current_state unless $current_state->{x};
             my $dx = ( $planet->{x} - $current_state->x );
             my $dy = ( $planet->{y} - $current_state->y );
             my $D  = sqrt( $dx**2 + $dy**2 );
@@ -84,7 +79,7 @@ sub _acceleration {
       )
     {
         $current_state->v_y( -$current_state->v_y );
-
+		$current_state->y( $current_state->y + (0.4 * $current_state->v_y ) );
     }
 
     if ( $current_state->x < 0 || $current_state->x > $app->w ) {

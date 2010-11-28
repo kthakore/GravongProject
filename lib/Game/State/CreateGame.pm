@@ -1,7 +1,7 @@
 package Game::State::CreateGame;
 use strict;
 use warnings;
-use base 'Game::State';
+use parent 'Game::State';
 use SDL::Events;
 use Game::Object::Socket;
 
