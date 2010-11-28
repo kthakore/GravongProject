@@ -43,6 +43,17 @@ sub load {
 		{
 			
 			$self->{status} = 'Connected to :'.$3;
+
+			$3 =~ /(\S+)(\:)(\S+)/;
+
+			my $ip = $1;
+			my $port = $3;
+
+						
+			$game->{remote} = Game::Object::Socket->new( game => $game, remote => 1, remote_ip => $ip, remote_port => $port );
+
+			#Complete hand shake
+			$game->{remote}->print ( "(1)" );
 		}
 		
 	};
