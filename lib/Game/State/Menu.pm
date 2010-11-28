@@ -19,7 +19,7 @@ sub load {
 
         #  change_sound => 'data/menu_select.ogg',
       )->items(
-        'Create Game' => sub {  $self->{next} = 'create_game';  },
+        'Create Game' => sub { $self->{next} = 'create_game'; },
         'Join Game'   => sub { $self->{next} = 'join_game'; },
         'Quit'        => sub { $self->{next} = 'quit' },
       );

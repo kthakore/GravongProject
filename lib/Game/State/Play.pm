@@ -85,4 +85,9 @@ sub _draw_planets {
 
 }
 
+sub _draw_score {
+    my ( $self, $delta, $app, $game ) = @_;
+
+}
+
 1;
