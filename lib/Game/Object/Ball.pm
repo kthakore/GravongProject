@@ -26,7 +26,7 @@ sub interface : lvalue {
 }
 
 sub _initialize {
-    my ($self) = @_;
+    my ($self) = shift;
 
     my $app = $self->{app};
 
@@ -39,14 +39,23 @@ sub _initialize {
 sub _acceleration {
     my ( $time, $current_state, $self, $app ) = @_;
 
-    my $level = $self->{level};
+    my $level = $self->{game}->{level};
 
-    my $paddle = $self->{paddle};
+    my $paddle = $self->{game}->{paddle};
+
+	my $scores = $self->{game}->{scores};
+
+	if ( $current_state->y > $app->h )
+	{
+		$scores->[0] += 1;
+
+		$self->{updated_score} = 1;
+
+		_reset_ball( $app->w, $app->h, $current_state);
+	}
 
     my $sum_accel_x = 0;
     my $sum_accel_y = 0;
-
-    if ( $time > 5 ) {
 
         my @planets = @{$level};
         foreach my $planet (@planets) {
@@ -67,7 +76,7 @@ sub _acceleration {
 
         }
 
-    }
+
 
     if (
         _collision(
@@ -95,7 +104,26 @@ sub _acceleration {
     $current_state->y(0) if $current_state->y < 0;
     $current_state->y( $app->h ) if $current_state->y > $app->h;
 
+	
+
     return ( $sum_accel_x, $sum_accel_y, 0 );
+}
+
+sub _reset_ball {
+	my ($w, $h, $state ) = @_;
+
+	my $x = rand($w);
+	my $y = rand($h);
+
+	my $v_x = rand( 10 ) - rand( 10 ) + 5;
+	my $v_y = rand( 10 ) - rand( 10 ) + 5;
+
+
+	$state->x( $x );
+	$state->y( $y );
+	$state->v_x( $v_x );	
+	$state->v_y( $v_y );
+	
 }
 
 sub _show_ball {
