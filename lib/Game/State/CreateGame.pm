@@ -54,6 +54,11 @@ sub load {
 
 			#Complete hand shake
 			$game->{remote}->print ( "(1)" );
+
+			     $self->{next} = 'create_level';
+                $app->stop();
+
+			
 		}
 		
 	};
