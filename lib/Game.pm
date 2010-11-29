@@ -40,6 +40,9 @@ my $STATES = {
         back => 'Game::State::Menu',
         end  => 'Game::State::EndGame'
     }
+    'Game::State::EndGame' => {
+        back => 'Game::State::Menu',
+	}
 };
 
 sub get_singleton {

@@ -115,10 +115,10 @@ sub _send_recv_score {
 
 			}
 
-    if ( $game->{scores}->[0] > 10 ) {
+    if ( $game->{scores}->[0] >= 10 ) {
         $game->{lost} = 1;
     }
-    elsif ( $game->{scores}->[1] > 10 ) {
+    elsif ( $game->{scores}->[1] >= 10 ) {
 
         $game->{lost} = 2;
 
