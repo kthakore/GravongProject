@@ -17,7 +17,7 @@ sub load {
     $who_won = "You won"  if $game->{lost} == 2;
 
     $app->draw_gfx_text( [ $app->w / 2, $app->h / 2 ],
-        $who_won, [ 255, 0, 0, 255 ] );
+       [ 200, 150, 24, 255 ], $who_won );
 
     sleep(1);
 
