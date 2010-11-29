@@ -11,6 +11,9 @@ sub load {
     my $app = $game->app();
     $app->draw_rect( [ 0, 0, $app->w, $app->h ], [ 0, 0, 0, 255 ] );
 
+    $self->{status} =
+      'Click and Drag to make planets. Maximum 5 planets allowed.';
+
     $self->_initialize();
     my $event_handler = sub {
 
@@ -24,22 +27,14 @@ sub load {
                 $self->{next} = 'back';
                 $app->stop();
             }
+            if ( $key eq 'c' || $key eq 'C' ) {
+
+                $self->_initialize();
+
+            }
             if ( $key eq 'enter' || $key eq 'return' ) {
 
-                my $planets;
-                foreach my $planet ( @{ $self->planets } ) {
-                    $planets .= ':'
-                      . $planet->{x} . ','
-                      . $planet->{y} . ','
-                      . $planet->{size};
-
-                }
-                $game->{remote}->print("2|$planets");
-
-                $self->{state} = 'sent';
-
-                $self->{status} = 'Waiting for opponent to make level';
-
+                $self->_send_planets($game);
             }
         }
 
@@ -73,23 +68,32 @@ sub load {
                 $app->stop();
 
             }
-			elsif( $data && $data eq '-1' )
-			{
-		
-				warn 'Other player left';	
-			                   $self->{next}  = 'back';
+            elsif ( $data && $data eq '-1' ) {
+
+                warn 'Other player left';
+                $self->{next} = 'back';
                 $app->stop();
 
-
-			}
+            }
         }
 
     };
 
     my $show_handler = sub {
         my ( $delta, $app ) = @_;
-        $app->draw_gfx_text( [ 10, 10 ], [ 255, 0, 0, 255 ], $self->{status} );
 
+        $app->draw_rect( [ 0, 0, $app->w, $app->h ], 0 );
+        $app->draw_gfx_text(
+            [ 10, 10 ],
+            [ 255, 255, 255, 255 ],
+            $self->{status}
+        );
+
+        $app->draw_gfx_text(
+            [ 10, 680 ],
+            [ 255, 255, 255, 255 ],
+            "Press c to clear the planets. Press enter to finish."
+        );
         $self->_draw_planets(@_);
 
         $app->update();
@@ -124,6 +128,8 @@ sub _initialize {
 sub _drawing_mouse_handler {
     my ( $self, $event, $app ) = @_;
 
+    $self->current_state = 'done' if ( $#{ $self->planets } == 4 );
+
     # We clicked. So go make a planet there
     if ( $self->current_state eq 'nil' && $event->type == SDL_MOUSEBUTTONDOWN )
     {
@@ -148,6 +154,23 @@ sub _drawing_mouse_handler {
         #We are done placing the planet
         $self->current_state = 'nil';
     }
+
+}
+
+sub _send_planets {
+
+    my ( $self, $game ) = @_;
+    my $planets;
+    foreach my $planet ( @{ $self->planets } ) {
+        $planets .=
+          ':' . $planet->{x} . ',' . $planet->{y} . ',' . $planet->{size};
+
+    }
+    $game->{remote}->print("2|$planets");
+
+    $self->{state} = 'sent';
+
+    $self->{status} = 'Waiting for opponent to make level';
 
 }
 

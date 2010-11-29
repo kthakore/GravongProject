@@ -23,7 +23,7 @@ sub _initialize {
 
     my $app = $game->app();
 
-    $game->{scores} = [ 0, 0 ];
+    $game->{scores} = [ 10, 10 ];
     $app->draw_rect( [ 0, 0, $app->w, $app->h ], [ 0, 0, 0, 255 ] );
     my $event_handler = sub {
 
@@ -105,20 +105,18 @@ sub _send_recv_score {
         $game->{scores}->[1] = $3;
 
     }
-	elsif( $data && $data eq '-1' )
-			{
-		
-				warn 'Other player left';	
-	                $self->{next}  = 'back';
-                $game->{app}->stop();
+    elsif ( $data && $data eq '-1' ) {
 
+        warn 'Other player left';
+        $self->{next} = 'back';
+        $game->{app}->stop();
 
-			}
+    }
 
-    if ( $game->{scores}->[0] >= 10 ) {
+    if ( $game->{scores}->[0] <= 0 ) {
         $game->{lost} = 1;
     }
-    elsif ( $game->{scores}->[1] >= 10 ) {
+    elsif ( $game->{scores}->[1] <= 0 ) {
 
         $game->{lost} = 2;
 
@@ -138,7 +136,10 @@ sub _draw_score {
     $app->draw_gfx_text(
         [ 10, 10 ],
         [ 255, 0, 0, 255 ],
-        "You: " . $game->{scores}->[0] . " Opponent: " . $game->{scores}->[1]
+        "Your Lives: "
+          . $game->{scores}->[0]
+          . " Opponent Lives: "
+          . $game->{scores}->[1]
     );
 
 }

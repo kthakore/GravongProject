@@ -39,10 +39,8 @@ my $STATES = {
     'Game::State::Play' => {
         back => 'Game::State::Menu',
         end  => 'Game::State::EndGame'
-    }
-    'Game::State::EndGame' => {
-        back => 'Game::State::Menu',
-	}
+    },
+    'Game::State::EndGame' => { back => 'Game::State::Menu', }
 };
 
 sub get_singleton {
@@ -77,7 +75,7 @@ sub start {
 
             }
 
-         };
+        };
 
         $game->app->add_event_handler($global_quit_callback);
 

@@ -9,9 +9,9 @@ sub load {
 
     my ( $class, $game ) = @_;
 
-	my $self = {};
+    my $self = {};
 
-	$self = bless $self, $class;
+    $self = bless $self, $class;
     my $app = $game->{app};
 
     my $who_won = "whut";
@@ -19,18 +19,18 @@ sub load {
     $who_won = "You lost" if $game->{lost} == 1;
     $who_won = "You won"  if $game->{lost} == 2;
 
-	$app->draw_rect( [0,0,$app->w, $app->h], 0 );
+    $app->draw_rect( [ 0, 0, $app->w, $app->h ], 0 );
     $app->draw_gfx_text( [ $app->w / 2, $app->h / 2 ],
-       [ 200, 150, 24, 255 ], $who_won );
+        [ 200, 150, 24, 255 ], $who_won );
 
-	$app->update();
+    $app->update();
 
     sleep(1);
 
-	$self->{next} = 'back';
+    $self->{next} = 'back';
     $app->stop();
 
-	return $self;
+    return $self;
 }
 
 1;
