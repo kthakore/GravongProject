@@ -106,6 +106,21 @@ sub _send_recv_score {
 
     }
 
+    if ( $game->{scores}->[0] > 10 ) {
+        $game->{lost} = 1;
+    }
+    elsif ( $game->{scores}->[1] > 10 ) {
+
+        $game->{lost} = 2;
+
+    }
+
+    if ( $game->{lost} ) {
+        $self->{next} = 'end';
+        $game->{app}->stop();
+
+    }
+
 }
 
 sub _draw_score {

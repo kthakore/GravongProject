@@ -8,11 +8,13 @@ use SDL;
 use SDL::Video;
 use SDL::Event;
 use SDLx::App;
-use Game::State::Menu;
-use Game::State::CreateGame;
-use Game::State::JoinGame;
-use Game::State::CreateLevel;
+
 use Game::State::Play;
+use Game::State::Menu;
+use Game::State::EndGame;
+use Game::State::JoinGame;
+use Game::State::CreateGame;
+use Game::State::CreateLevel;
 
 my $SINGLETON;
 
@@ -55,13 +57,47 @@ sub start {
 
     my $current_state = 'Game::State::Menu';
 
-    while (1) {
+    while ( !$game->{quit} ) {
 
         my $concrete_state = $current_state->load($game);
 
         my $global_quit_callback = sub {
-            $concrete_state->next = undef;
-            $_[1]->stop() if $_[0]->type == SDL_QUIT;
+            if ( $_[0]->type == SDL_QUIT ) {
+                $concrete_state->next = undef;
+
+                # If we are connected tell the others we are done
+                if ( $game->{remote} ) {
+                    $game->{remote}->print("-1");
+                }
+
+                $_[1]->stop();
+
+            }
+
+            if ( $game->{socket_reader} ) {
+
+                my $data = $game->{socket_reader}->recv();
+
+                if ( $data && $data eq -1 ) {
+                    my $next = undef;
+
+                    unless ( $current_state eq 'Game::State::Menu' ) {
+                        warn "Other player has left the game";
+                        $next = 'back';
+                    }
+
+                    $concrete_state->next = $next;
+                    $_[1]->stop();
+                }
+                elsif ( $data && $data ne -1 ) {
+
+                    # pass the data back into backlog
+
+                    push( @{ $game->{backlog} }, $data );
+
+                }
+
+            }
         };
 
         $game->app->add_event_handler($global_quit_callback);
@@ -71,10 +107,14 @@ sub start {
         $game->app->remove_all_handlers();
 
         my $next = $concrete_state->next();
-        die 'Finished at state ' . $current_state unless $next;
 
-        $current_state = $STATES->{$current_state}->{$next};
-
+        unless ($next) {
+            print 'Finished at state ' . $current_state . "\n";
+            $game->{quit} = 1;
+        }
+        else {
+            $current_state = $STATES->{$current_state}->{$next};
+        }
     }
 }
 
