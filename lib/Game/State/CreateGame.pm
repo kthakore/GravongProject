@@ -57,6 +57,16 @@ sub load {
             $app->stop();
 
         }
+			elsif( $data && $data eq '-1' )
+			{
+		
+				warn 'Other player left';	
+	                $self->{next}  = 'back';
+                $app->stop();
+
+
+			}
+
 
     };
 

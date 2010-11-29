@@ -49,7 +49,16 @@ sub load {
 
         my $data = $game->{socket_reader}->recv();
         $game->{connected} = 1 if ( $data eq '(1)' );
+		
+		if( $data && $data eq '-1' )
+			{
+		
+				warn 'Other player left';	
+	                $self->{next}  = 'back';
+                $app->stop();
 
+
+			}
         #Check for connection and go to next stage
         if ( $game->{connected} && $game->{connected} != -1 ) {
             $self->{status} = "Connected to: " . $ipaddress->{value};

@@ -105,6 +105,15 @@ sub _send_recv_score {
         $game->{scores}->[1] = $3;
 
     }
+	elsif( $data && $data eq '-1' )
+			{
+		
+				warn 'Other player left';	
+	                $self->{next}  = 'back';
+                $game->{app}->stop();
+
+
+			}
 
     if ( $game->{scores}->[0] > 10 ) {
         $game->{lost} = 1;

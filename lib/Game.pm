@@ -74,31 +74,7 @@ sub start {
 
             }
 
-            if ( $game->{socket_reader} ) {
-
-                my $data = $game->{socket_reader}->recv();
-
-                if ( $data && $data eq -1 ) {
-                    my $next = undef;
-
-                    unless ( $current_state eq 'Game::State::Menu' ) {
-                        warn "Other player has left the game";
-                        $next = 'back';
-                    }
-
-                    $concrete_state->next = $next;
-                    $_[1]->stop();
-                }
-                elsif ( $data && $data ne -1 ) {
-
-                    # pass the data back into backlog
-
-                    push( @{ $game->{backlog} }, $data );
-
-                }
-
-            }
-        };
+         };
 
         $game->app->add_event_handler($global_quit_callback);
 
