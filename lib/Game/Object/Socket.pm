@@ -31,7 +31,18 @@ sub new {
 
 	
       eval(' $self->{game}->{local_ip} = Net::Address::IP::Local->connected_to("173.194.32.104"); ');
-		if( $@ ) { $self->{game}->{local_ip} = '127.0.0.1'; }
+		if( $@ ) { 
+			printf ( STDERR "Couldn't get public address: $@ \n Trying local lan ");
+		
+			if( $@) 
+			{
+
+				eval(' $self->{game}->{local_ip} = Net::Address::IP::Local->public(); ' );	
+				printf ( STDERR "Couldn't get local lan address: $@ \n Using 127.0.0.1 ");
+
+				$self->{game}->{local_ip} = '127.0.0.1'; 
+			}
+		}
         $self->{game}->{port}     = int( rand( 65535 - 49151 ) + 49151 );
         $self->{game}->{ipp} =
           $self->{game}->{local_ip} . ':' . $self->{game}->{port};
