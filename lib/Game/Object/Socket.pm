@@ -43,7 +43,7 @@ sub new {
 				$self->{game}->{local_ip} = '127.0.0.1'; 
 			}
 		}
-        $self->{game}->{port}     = int( rand( 65535 - 49151 ) + 49151 );
+        $self->{game}->{port}     = int(  49151 );
         $self->{game}->{ipp} =
           $self->{game}->{local_ip} . ':' . $self->{game}->{port};
 
